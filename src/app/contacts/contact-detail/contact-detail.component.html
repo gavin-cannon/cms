@@ -1,0 +1,28 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-xs-12">
+                <h3 class="panel-title">{{ contact.name }}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <img src="{{ contact.imageUrl }}" alt="{{ contact.name }}" class="img-responsive">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 text-right">
+                <a href="#" class="btn btn-primary btn-xs">Edit</a>
+                <a href="#" class="btn btn-danger btn-xs">Delete</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <p><strong>Email:</strong> {{ contact.email }}</p>
+                <p><strong>Phone:</strong> {{ contact.phone }}</p>
+            </div>
+        </div>
+    </div>
+</div>
