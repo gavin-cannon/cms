@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'cms-header',
@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent{
-  collapsed = true
+  collapsed = true;
+  @Output() headerClickEvent = new EventEmitter<string>();
+
+  onHeaderClick(selectedItem: string) {
+    this.headerClickEvent.emit(selectedItem);
+   }
 }
