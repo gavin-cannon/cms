@@ -1,10 +1,8 @@
-<cms-header (headerClickEvent)="onNavClick($event)"></cms-header>
+<cms-header></cms-header>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <cms-documents *ngIf="selectedFeature === 'document'"></cms-documents>
-            <cms-message-list *ngIf="selectedFeature === 'message'"></cms-message-list>
-            <cms-contacts *ngIf="selectedFeature === 'contact'"></cms-contacts>
+            <router-outlet></router-outlet>
         </div>
     </div>
 </div>

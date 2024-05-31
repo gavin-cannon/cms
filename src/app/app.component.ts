@@ -7,9 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'cms';
-  selectedFeature: string = 'document';
 
-  onNavClick(navFeature: string) {
-    this.selectedFeature = navFeature;
-  }
 }

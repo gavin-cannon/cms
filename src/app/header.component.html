@@ -8,9 +8,9 @@
         </div>
         <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
             <ul class="nav navbar-nav">
-                <li><a href="#" (click)="onHeaderClick('document')">Documents</a></li>
-                <li><a href="#" (click)="onHeaderClick('message')">Messages</a></li>
-                <li><a href="#" (click)="onHeaderClick('contact')">Contacts</a></li>
+                <li routerLinkActive="active"><a routerLink="/documents">Documents</a></li>
+                <li routerLinkActive="active"><a routerLink="/messages">Messages</a></li>
+                <li routerLinkActive="active"><a routerLink="/contacts">Contacts</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown" cmsDropdown>

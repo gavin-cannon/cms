@@ -16,7 +16,7 @@
         <hr>
         <div class="row">
             <div class="col-xs-12">
-                <cms-contact-item *ngFor="let contactEl of contacts" [contact]="contactEl" (contactSelected)="onContactSelected(contactEl)"></cms-contact-item>
+                <cms-contact-item [routerLink]="contactEl.id" *ngFor="let contactEl of contacts" [contact]="contactEl"></cms-contact-item>
             </div>
         </div>
     </div>
