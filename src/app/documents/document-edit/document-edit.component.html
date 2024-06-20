@@ -1,6 +1,5 @@
 <div class="panel panel-default">
     <div class="panel-body">
-
         <form id="document-edit" (ngSubmit)="onSubmit(f)" #f="ngForm">
             <div class="row">
                 <div class="col-sm-12 form-group">
@@ -8,14 +7,12 @@
                     <input #docName="ngModel" required [ngModel]="document.name" name="name" type="text" id="name" class="form-control" size="120" max="120">
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-sm-12 form-group">
                     <label for="description">Document Description:</label>
                     <input [ngModel]="document.description" name="description" type="text" id="description" class="form-control" size="120" max="255">
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-sm-12 form-group">
                     <label for="url">Document URL:</label>
@@ -25,7 +22,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-xs-12 btn-toolbar">
                     <button [disabled]="!f.valid" class="btn btn-success" type="submit">Save</button>

@@ -2,6 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Document } from './document.model';
 import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 import { Subject } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class DocumentService {
   // maxId: number;
   maxDocumentId: number;
   
-  constructor() {
+  constructor(private http: HttpClient) {
     this.documents = MOCKDOCUMENTS;
     this.maxDocumentId = this.getMaxId();
   }
@@ -40,7 +41,7 @@ export class DocumentService {
     this.documents.push(newDocument);
 
     const documentsListClone = this.documents.slice();
-    this.documentChangedEvent.next(documentsListClone);
+    this.storeDocuments();
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
@@ -56,15 +57,35 @@ export class DocumentService {
     newDocument.id = originalDocument.id;  
     this.documents[pos] = newDocument;  
 
-    const documentsListClone = this.documents.slice(); 
-    this.documentChangedEvent.next(documentsListClone); 
+    // const documentsListClone = this.documents.slice();
+    // this.documentChangedEvent.next(documentsListClone); 
+    this.storeDocuments();
   }
 
 
   
   getDocuments() {
+    this.http.get<Document[]>('https://cms-project-98b35-default-rtdb.firebaseio.com/documents.json')
+      .subscribe(
+        (documents: Document[] ) => {
+          this.documents = documents;
+          this.maxDocumentId = this.getMaxId();
+          this.documents.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            } else if (a.name > b.name) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+          this.documentChangedEvent.next(this.documents.slice());
+
+       }
+    )
     return this.documents.slice();
   }
+
   getDocument(id: string) {
     for (let document of this.documents) {
       if (document.id === id) {
@@ -83,7 +104,19 @@ export class DocumentService {
        return;
     }
     this.documents.splice(pos, 1);
-    this.documentChangedEvent.next(this.documents.slice());
+    // this.documentChangedEvent.next(this.documents.slice());
+    this.storeDocuments();
  }
 
+  storeDocuments() {
+    const documentArrayString = JSON.stringify(this.documents);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    this.http.put('https://cms-project-98b35-default-rtdb.firebaseio.com/documents.json',
+      documentArrayString,
+      {headers}
+    ).subscribe(() => {
+      this.documentChangedEvent.next(this.documents.slice());
+    });
+  }
+  
 }
