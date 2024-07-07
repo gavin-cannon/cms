@@ -10,8 +10,39 @@ var logger = require('morgan');
 var index = require('./server/routes/app');
 const messageRoutes = require('./server/routes/messages');
 const contactRoutes = require('./server/routes/contacts');
-const documentRoutes = require('./server/routes/documents');
+const documentsRoutes = require('./server/routes/documents');
+var mongoose = require('mongoose');
 
+
+
+// establish a connection to the mongo database
+// mongoose.connect('mongodb://localhost:27017/cms', { useNewUrlParser: true }, (err, res) => {
+// if (err) {
+// console.log('Connection failed: ' + err);
+// } else {
+// console.log('Connected to database!');
+// }
+// });
+
+async function connectToDatabase() {
+    try {
+        await mongoose.connect('mongodb://localhost:27017/cms', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        console.log('Connected to the database!');
+    } catch (err) {
+        console.log('Connection failed: ' + err);
+    }
+}
+connectToDatabase();
+// mongoose.connect('mongodb+srv://cannongavin20:FWYPcFqz6HIkeZOI@cluster0.d5yauge.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+//     .then(() => {
+//         console.log('Connected to database!');
+//     })
+//     .catch(err => {
+//         console.log('Connection failed!', err);
+//     });
 
 // ... ADD CODE TO IMPORT YOUR ROUTING FILES HERE ... 
 

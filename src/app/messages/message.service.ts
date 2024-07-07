@@ -13,6 +13,7 @@ export class MessageService {
 
   constructor(private http: HttpClient) {
     this.messages = MOCKMESSAGES;
+    this.getMessages();
   }
   getMaxId(): number {
     let maxId = 0;
@@ -31,17 +32,33 @@ export class MessageService {
       return;
   }
 
-  this.maxMessageId++;
-  newMessage.id = this.maxMessageId.toString();
-  this.messages.push(newMessage);
+  newMessage.id = '';
 
-  const messagesListClone = this.messages.slice();
-  this.storeMessages();
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+  this.http.post<Message>('http://localhost:3000/messages',
+    newMessage,
+    { headers: headers }
+  ).subscribe(
+    (responseData) => {
+      this.messages.push(responseData);
+      console.log(responseData)
+      this.messageChangedEvent.next(this.messages.slice());
+    }
+  );
+    
+    
+  // this.maxMessageId++;
+  // newMessage.id = this.maxMessageId.toString();
+  // this.messages.push(newMessage);
+
+  // const messagesListClone = this.messages.slice();
+  // this.storeMessages();
 }
   
   getMessages() {
     // return this.messages.slice();
-    this.http.get<Message[]>('https://cms-project-98b35-default-rtdb.firebaseio.com/messages.json')
+    this.http.get<Message[]>('http://localhost:3000/messages')
     .subscribe(
       (messages: Message[] ) => {
         this.messages = messages;

@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Contact } from './contact.model';
-import { MOCKCONTACTS } from './MOCKCONTACTS';
+// import { MOCKCONTACTS } from './MOCKCONTACTS';
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -13,13 +13,13 @@ export class ContactService {
   contactChangedEvent = new Subject<Contact[]>();
   maxContactId: number;
   constructor(private http: HttpClient) {
-    this.contacts = MOCKCONTACTS;
-    this.maxContactId = this.getMaxId();
+    this.getContacts();
+    // this.maxContactId = this.getMaxId();
   }
 
   getMaxId(): number {
     let maxId = 0;
-
+    console.log(this.contacts);
     for (const contact of this.contacts) {
         const currentId = Number(contact.id);
         if (currentId > maxId) {
@@ -35,11 +35,15 @@ export class ContactService {
 
     
   getContacts() {
-    this.http.get<Contact[]>('https://cms-project-98b35-default-rtdb.firebaseio.com/contacts.json')
+    this.http.get<Contact[]>('http://localhost:3000/contacts')
       .subscribe(
-        (contacts: Contact[] ) => {
+        (contacts: Contact[]) => {
+
+         const contactValues = Object.values(contacts)[1];
+      
+
           this.contacts = contacts;
-          this.maxContactId = this.getMaxId();
+          // this.maxContactId = this.getMaxId();
           this.contacts.sort((a, b) => {
             if (a.name < b.name) {
               return -1;
@@ -57,8 +61,15 @@ export class ContactService {
   }
 
   getContact(id: string): Contact {
+
+    if (this.contacts === undefined || this.contacts.length == 0) {
+      this.getContacts();
+    }
+
     for (let contact of this.contacts) {
+
       if (contact.id === id) {
+        console.log(contact, 'and the id is', contact.id);
         return contact;
       }
     }
@@ -70,13 +81,27 @@ export class ContactService {
         return;
     }
 
-    this.maxContactId++;
-    newContact.id = this.maxContactId.toString();
-    this.contacts.push(newContact);
+    newContact.id = '';
 
-    const contactsListClone = this.contacts.slice();
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.post< Contact >('http://localhost:3000/contacts',
+      newContact,
+      { headers: headers }
+    ).subscribe(
+      (responseData) => {
+        this.contacts.push(responseData);
+        this.contactChangedEvent.next(this.contacts.slice());
+      }
+    );
+
+    // this.maxContactId++;
+    // newContact.id = this.maxContactId.toString();
+    // this.contacts.push(newContact);
+
+    // const contactsListClone = this.contacts.slice();
     // this.contactChangedEvent.next(contactsListClone);
-    this.storeContacts();
+    // this.storeContacts();
   }
 
 
@@ -92,10 +117,18 @@ export class ContactService {
 
     newContact.id = originalContact.id;  
     this.contacts[pos] = newContact;  
-
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    
+    this.http.put('http://localhost:3000/contacts/' + originalContact.id, newContact, { headers: headers })
+      .subscribe(
+        (response: Response) => {
+          this.contacts[pos] = newContact;
+          this.contactChangedEvent.next(this.contacts.slice());
+        }
+      );
     // const contactsListClone = this.contacts.slice();
     // this.contactChangedEvent.next(contactsListClone);
-    this.storeContacts();
+    // this.storeContacts();
   }
 
 
@@ -106,10 +139,19 @@ export class ContactService {
    const pos = this.contacts.indexOf(contact);
    if (pos < 0) {
       return;
-   }
-   this.contacts.splice(pos, 1);
+    }
+    
+    this.http.delete('http://localhost:3000/contacts/' + contact.id)
+    .subscribe(
+      (response: Response) => {
+        this.contacts.splice(pos, 1);
+        this.contactChangedEvent.next(this.contacts.slice());
+      }
+    );
+
+  //  this.contacts.splice(pos, 1);
     //  this.contactChangedEvent.next(this.contacts.slice());
-    this.storeContacts();
+    // this.storeContacts();
   }
 
   storeContacts() {
