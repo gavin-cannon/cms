@@ -36,7 +36,7 @@ async function connectToDatabase() {
     }
 }
 connectToDatabase();
-// mongoose.connect('mongodb+srv://cannongavin20:FWYPcFqz6HIkeZOI@cluster0.d5yauge.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+
 //     .then(() => {
 //         console.log('Connected to database!');
 //     })
